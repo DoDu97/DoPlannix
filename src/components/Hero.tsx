@@ -7,8 +7,9 @@ export default function Hero() {
   const heroRef = useRef<HTMLElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
 
-  /* parallax fade on scroll */
+  /* parallax fade on scroll — desktop only */
   useEffect(() => {
+    if (window.matchMedia('(max-width: 768px)').matches) return
     const hero = heroRef.current
     if (!hero) return
     const onScroll = () => {
@@ -37,8 +38,7 @@ export default function Hero() {
       {/* ─── HERO ─── */}
       <section
         ref={heroRef}
-        className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 md:px-14 pt-28 pb-16 sticky top-0 z-10 overflow-hidden"
-        style={{ willChange: 'opacity, transform' }}
+        className="relative min-h-screen flex flex-col items-center justify-center text-center px-6 md:px-14 pt-28 pb-16 md:sticky md:top-0 z-10 overflow-hidden"
       >
         {/* ambient glow */}
         <div
