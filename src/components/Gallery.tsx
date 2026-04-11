@@ -87,7 +87,8 @@ export default function Gallery() {
                 className="flex-shrink-0 rounded-2xl overflow-hidden border border-stroke group"
                 style={{
                   width: `calc((100% - ${(perView - 1) * 20}px) / ${perView})`,
-                  aspectRatio: '16/10',
+                  height: perView === 1 ? '210px' : undefined,
+                  aspectRatio: perView === 1 ? undefined : '16/10',
                   position: 'relative',
                 }}
               >
