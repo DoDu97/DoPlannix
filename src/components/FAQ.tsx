@@ -19,15 +19,15 @@ export default function FAQ() {
           className="font-black tracking-tight leading-[1.12] mb-3"
           style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}
         >
-          Časté otázky
+          Frequently Asked Questions
         </h2>
         <p className="text-dim text-base">
-          Nenašel jsi odpověď?{' '}
+          Didn&apos;t find an answer?{' '}
           <a
-            href="mailto:hello@doplannix.cz"
+            href="mailto:hello@doplannix.com"
             className="text-gold underline underline-offset-4 hover:text-gold-glow transition-colors"
           >
-            Napiš nám
+            Contact us
           </a>
           .
         </p>

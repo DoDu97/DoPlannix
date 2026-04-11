@@ -68,7 +68,7 @@ export default function Hero() {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
             </svg>
-            30denní garance vrácení peněz
+            30-day money-back guarantee
           </div>
         </div>
 
@@ -80,9 +80,9 @@ export default function Hero() {
             animation: 'fadeUp 0.7s 0.25s ease both',
           }}
         >
-          Získej kontrolu nad svým{' '}
-          <span className="text-gold-glow">životem,&nbsp;financemi</span>
-          <br />i <span className="text-gold-glow">businessem.</span>
+          Take control of your{' '}
+          <span className="text-gold-glow">life,&nbsp;finances,</span>
+          <br />and <span className="text-gold-glow">business.</span>
         </h1>
 
         {/* sub */}
@@ -93,9 +93,9 @@ export default function Hero() {
             animation: 'fadeUp 0.7s 0.4s ease both',
           }}
         >
-          Prémiové šablony, které ti pomohou udělat pořádek v každodenním chaosu
-          a mít vše důležité přehledně na jednom místě. Jednoduše, rychle a bez
-          zbytečné složitosti.
+          Premium templates that help you bring order to everyday chaos and keep
+          everything important in one place. Simple, fast, and without unnecessary
+          complexity.
         </p>
 
         {/* CTA row */}
@@ -107,7 +107,7 @@ export default function Hero() {
             href="#products"
             className="btn-gold text-[0.95rem] px-8 py-3.5"
           >
-            Zobrazit produkty ↓
+            View products ↓
           </a>
         </div>
       </section>
@@ -130,7 +130,7 @@ export default function Hero() {
               background: 'linear-gradient(to bottom, transparent 0%, #0a0a0a 100%)',
             }}
           />
-          <a href="#products" aria-label="Zobrazit produkty" className="block">
+          <a href="#products" aria-label="View products" className="block">
             <Image
               ref={imgRef as React.RefObject<HTMLImageElement>}
               src="/images/product_bundle.png"

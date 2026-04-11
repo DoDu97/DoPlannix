@@ -47,15 +47,15 @@ export default function Testimonials() {
     >
       {/* header */}
       <div className="text-center mb-14">
-        <p className="section-label">Co říkají zákazníci</p>
+        <p className="section-label">What customers say</p>
         <h2
           className="font-black tracking-tight leading-[1.12] mb-3"
           style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}
         >
-          Výsledky mluví za vše
+          Results speak for themselves
         </h2>
         <p className="text-dim text-base max-w-md mx-auto">
-          Přidej se k lidem, kteří přestali improvizovat a začali mít systém.
+          Join the people who stopped improvising and started having a system.
         </p>
       </div>
 
@@ -114,7 +114,7 @@ export default function Testimonials() {
             onClick={() => goTo(current - 1)}
             disabled={current === 0}
             className="w-11 h-11 rounded-xl border border-stroke text-white flex items-center justify-center cursor-pointer transition-all duration-300 hover:enabled:border-gold hover:enabled:text-gold disabled:opacity-30 disabled:cursor-default bg-card"
-            aria-label="Předchozí"
+            aria-label="Previous"
           >
             ←
           </button>
@@ -139,7 +139,7 @@ export default function Testimonials() {
             onClick={() => goTo(current + 1)}
             disabled={current >= maxIndex}
             className="w-11 h-11 rounded-xl border border-stroke text-white flex items-center justify-center cursor-pointer transition-all duration-300 hover:enabled:border-gold hover:enabled:text-gold disabled:opacity-30 disabled:cursor-default bg-card"
-            aria-label="Další"
+            aria-label="Next"
           >
             →
           </button>

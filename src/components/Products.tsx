@@ -53,14 +53,13 @@ function ProductCard({
         <div className="flex items-center justify-between gap-3 border-t border-stroke pt-5">
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="text-[0.78rem] text-red-400 line-through">{formatPrice(product.originalPrice)} Kč</span>
+              <span className="text-[0.78rem] text-red-400 line-through">{formatPrice(product.originalPrice)}</span>
               <span className="text-[0.75rem] font-black tracking-wide px-2 py-0.5 rounded-full bg-gold text-black">
-                −{Math.round((1 - product.price / product.originalPrice) * 100)} %
+                −{Math.round((1 - product.price / product.originalPrice) * 10) * 10}%
               </span>
             </div>
             <span className="text-[1.4rem] font-black leading-tight">
-              {formatPrice(product.price)}{' '}
-              <span className="text-[0.9rem] font-semibold text-dim">Kč</span>
+              {formatPrice(product.price)}
             </span>
           </div>
           <button
@@ -71,7 +70,7 @@ function ProductCard({
                 : 'bg-gold text-black hover:bg-gold-glow hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(201,168,76,0.35)]'
             }`}
           >
-            {added ? '✓ Přidáno' : '+ Do košíku'}
+            {added ? '✓ Added' : '+ Add to Cart'}
           </button>
         </div>
       </div>
@@ -102,15 +101,15 @@ export default function Products() {
     >
       {/* header */}
       <div className="text-center mb-14">
-        <p className="section-label">Naše produkty</p>
+        <p className="section-label">Our Products</p>
         <h2
           className="font-black tracking-tight leading-[1.12] mb-3"
           style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}
         >
-          Vyber si svůj systém
+          Choose your system
         </h2>
         <p className="text-dim text-base max-w-md mx-auto">
-          Každý template je navržen pro jeden konkrétní cíl. Nebo vezmi vše najednou a ušetři.
+          Each template is designed for one specific goal. Or get everything at once and save.
         </p>
       </div>
 
@@ -120,7 +119,7 @@ export default function Products() {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gold shrink-0">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
           </svg>
-          <span className="text-[0.78rem] font-semibold text-gold">30denní garance vrácení peněz</span>
+          <span className="text-[0.78rem] font-semibold text-gold">30-day money-back guarantee</span>
         </div>
       </div>
 
@@ -133,7 +132,7 @@ export default function Products() {
         >
           {/* badge */}
           <div className="absolute top-4 right-4 z-10 text-[0.6rem] font-black tracking-[0.1em] uppercase px-2.5 py-1 rounded-full bg-gold text-black">
-            Nejlepší hodnota
+            Best Value
           </div>
 
           {/* image side */}
@@ -181,18 +180,17 @@ export default function Products() {
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">
                   <span className="text-[0.78rem] text-red-400 line-through">
-                    {formatPrice(bundle.originalPrice)} Kč
+                    {formatPrice(bundle.originalPrice)}
                   </span>
                   <span className="text-[0.75rem] font-black tracking-wide px-2 py-0.5 rounded-full bg-gold text-black">
-                    −60 %
+                    −60%
                   </span>
                 </div>
                 <span className="text-[1.4rem] font-black leading-tight">
-                  {formatPrice(bundle.price)}{' '}
-                  <span className="text-[0.9rem] font-semibold text-dim">Kč</span>
+                  {formatPrice(bundle.price)}
                 </span>
                 <span className="text-[0.75rem] text-gold mt-0.5">
-                  Ušetříš {formatPrice(bundle.originalPrice - bundle.price)} Kč oproti koupi zvlášť
+                  Save {formatPrice(bundle.originalPrice - bundle.price)} vs. buying separately
                 </span>
               </div>
               <button
@@ -203,7 +201,7 @@ export default function Products() {
                     : 'bg-gold text-black hover:bg-gold-glow hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(201,168,76,0.35)]'
                 }`}
               >
-                {added[bundle.id] ? '✓ Přidáno' : '+ Do košíku'}
+                {added[bundle.id] ? '✓ Added' : '+ Add to Cart'}
               </button>
             </div>
           </div>

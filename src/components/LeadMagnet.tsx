@@ -35,30 +35,30 @@ export default function LeadMagnet() {
         className="relative z-10 max-w-xl mx-auto text-center"
         data-animate
       >
-        <div className="gold-badge mb-7 mx-auto w-fit">✦ Zdarma pro tebe</div>
+        <div className="gold-badge mb-7 mx-auto w-fit">✦ Free for you</div>
 
         <h2
           className="font-black tracking-tight leading-[1.1] mb-4"
           style={{ fontSize: 'clamp(1.9rem, 4vw, 2.9rem)' }}
         >
-          Získej{' '}
-          <span className="text-gold-glow">mini šablonu</span>
+          Get a{' '}
+          <span className="text-gold-glow">free mini template</span>
           <br />
-          dřív než ostatní.
+          before everyone else.
         </h2>
 
         <p className="text-dim text-base leading-relaxed mb-6 max-w-md mx-auto">
-          Přidej se k lidem, kteří mají systém. Pošleme ti zdarma startovací
-          Notion template a dáme ti vědět jako první, až vydáme nový produkt
-          nebo slevu.
+          Join the people who have a system. We&apos;ll send you a free starter
+          Notion template and be the first to let you know when we release a new
+          product or discount.
         </p>
 
         {/* perks */}
         <div className="flex flex-wrap justify-center gap-4 mb-8">
           {[
-            'Notion template zdarma',
-            'Bez spamu, kdykoli odhlášení',
-            'Exkluzivní nabídky jako první',
+            'Free Notion template',
+            'No spam, unsubscribe anytime',
+            'Exclusive offers first',
           ].map((p) => (
             <span
               key={p}
@@ -73,7 +73,7 @@ export default function LeadMagnet() {
         {status === 'done' ? (
           <div className="flex items-center justify-center gap-2 text-gold font-semibold text-base">
             <span>✓</span>
-            <span>Díky! Brzy ti pošleme šablonu na e-mail.</span>
+            <span>Thanks! We&apos;ll send you the template via email soon.</span>
           </div>
         ) : (
           <form
@@ -84,7 +84,7 @@ export default function LeadMagnet() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="tvuj@email.cz"
+              placeholder="your@email.com"
               required
               className="flex-1 bg-noir border border-stroke rounded-xl px-5 py-3.5 text-[0.95rem] text-white placeholder-[#444] outline-none transition-colors duration-200 focus:border-gold min-w-0"
             />
@@ -93,14 +93,14 @@ export default function LeadMagnet() {
               disabled={status === 'loading'}
               className="btn-gold text-[0.92rem] px-6 py-3.5 flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {status === 'loading' ? '…' : 'Chci šablonu →'}
+              {status === 'loading' ? '…' : 'Get the template →'}
             </button>
           </form>
         )}
 
         {status !== 'done' && (
           <p className="text-[0.75rem] text-[#555]">
-            Žádný spam. Odhlásit se můžeš kdykoliv jedním klikem.
+            No spam. Unsubscribe anytime with one click.
           </p>
         )}
       </div>

@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
 import { useCart, useCartCount, useCartTotal } from '@/lib/cart'
-import { formatPrice } from '@/lib/data'
+import { formatPrice, formatPriceFull } from '@/lib/data'
 
 export default function CartDrawer() {
   const { state, dispatch } = useCart()
@@ -21,6 +21,8 @@ export default function CartDrawer() {
   })
   const [showPromo, setShowPromo] = useState(false)
   const [promoApplied, setPromoApplied] = useState(false)
+  const [promoDiscount, setPromoDiscount] = useState(0)
+  const [promoError, setPromoError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
   const drawerRef = useRef<HTMLDivElement>(null)
@@ -45,9 +47,24 @@ export default function CartDrawer() {
     0
   )
   const totalSavings = totalOriginal - total
+  const promoSavings = promoApplied ? total * promoDiscount / 100 : 0
+  const finalTotal = total - promoSavings
+
+  const PROMO_CODES: Record<string, number> = {
+    'DOPLANNIX10': 10,
+  }
 
   const handleApplyPromo = () => {
-    if (form.promoCode.trim()) setPromoApplied(true)
+    const code = form.promoCode.trim().toUpperCase()
+    if (PROMO_CODES[code] !== undefined) {
+      setPromoApplied(true)
+      setPromoDiscount(PROMO_CODES[code])
+      setPromoError(null)
+    } else {
+      setPromoApplied(false)
+      setPromoDiscount(0)
+      setPromoError('Invalid discount code.')
+    }
   }
 
   const handleCheckout = async (e: React.FormEvent) => {
@@ -74,12 +91,12 @@ export default function CartDrawer() {
       const data = await res.json()
 
       if (!res.ok || !data.url) {
-        throw new Error(data.error ?? 'Nepodařilo se spustit platbu.')
+        throw new Error(data.error ?? 'Failed to initiate payment.')
       }
 
       window.location.href = data.url
     } catch (err) {
-      setCheckoutError(err instanceof Error ? err.message : 'Neočekávaná chyba. Zkus to prosím znovu.')
+      setCheckoutError(err instanceof Error ? err.message : 'An unexpected error occurred. Please try again.')
       setIsLoading(false)
     }
   }
@@ -93,15 +110,15 @@ export default function CartDrawer() {
       />
 
       {/* drawer */}
-      <div className={`cart-drawer ${state.isOpen ? 'open' : ''}`}>
+      <div ref={drawerRef} className={`cart-drawer ${state.isOpen ? 'open' : ''}`}>
         {/* header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-stroke">
           <h3 className="text-[1.05rem] font-bold">
             {checkoutStep === 'cart'
-              ? `Košík${count > 0 ? ` (${count})` : ''}`
+              ? `Cart${count > 0 ? ` (${count})` : ''}`
               : checkoutStep === 'form'
-              ? 'Dokončení objednávky'
-              : 'Objednávka přijata'}
+              ? 'Complete Your Order'
+              : 'Order Received'}
           </h3>
           <button
             onClick={() => dispatch({ type: 'CLOSE' })}
@@ -118,12 +135,12 @@ export default function CartDrawer() {
               {items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center gap-3 flex-1 py-16 text-center text-dim">
                   <span className="text-4xl">🛒</span>
-                  <p className="text-[0.9rem]">Košík je prázdný</p>
+                  <p className="text-[0.9rem]">Your cart is empty</p>
                   <button
                     onClick={() => dispatch({ type: 'CLOSE' })}
                     className="mt-1 text-gold text-sm underline underline-offset-4 hover:text-gold-glow transition-colors cursor-pointer bg-transparent border-0"
                   >
-                    Prohlédnout produkty
+                    Browse products
                   </button>
                 </div>
               ) : (
@@ -146,12 +163,10 @@ export default function CartDrawer() {
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-[0.8rem] text-gold font-semibold">
-                          {formatPrice(item.price)} Kč
-                        </span>
+                          {formatPrice(item.price)}                        </span>
                         {item.originalPrice > item.price && (
                           <span className="text-[0.72rem] text-dim line-through">
-                            {formatPrice(item.originalPrice)} Kč
-                          </span>
+                            {formatPrice(item.originalPrice)}                          </span>
                         )}
                       </div>
                     </div>
@@ -194,30 +209,36 @@ export default function CartDrawer() {
               <div className="border-t border-stroke px-6 py-5 flex flex-col gap-3">
                 {totalSavings > 0 && (
                   <div className="flex justify-between items-center text-[0.82rem]">
-                    <span className="text-dim">Původní cena</span>
-                    <span className="text-dim line-through">{formatPrice(totalOriginal)} Kč</span>
+                    <span className="text-dim">Original price</span>
+                    <span className="text-dim line-through">{formatPrice(totalOriginal)}</span>
                   </div>
                 )}
                 {totalSavings > 0 && (
                   <div className="flex justify-between items-center text-[0.82rem]">
-                    <span className="text-[#4caf78]">Ušetříš</span>
-                    <span className="text-[#4caf78] font-semibold">−{formatPrice(totalSavings)} Kč</span>
+                    <span className="text-[#4caf78]">You save</span>
+                    <span className="text-[#4caf78] font-semibold">−{formatPrice(totalSavings)}</span>
+                  </div>
+                )}
+                {promoApplied && (
+                  <div className="flex justify-between items-center text-[0.82rem]">
+                    <span className="text-gold">Promo ({promoDiscount}% off)</span>
+                    <span className="text-gold font-semibold">−{formatPriceFull(promoSavings)}</span>
                   </div>
                 )}
                 <div className="flex justify-between items-center">
-                  <span className="text-[0.9rem] text-dim">Celkem</span>
+                  <span className="text-[0.9rem] text-dim">Total</span>
                   <strong className="text-[1.3rem] font-black">
-                    {formatPrice(total)} Kč
+                    {promoApplied ? formatPriceFull(finalTotal) : formatPrice(finalTotal)}
                   </strong>
                 </div>
                 <button
                   onClick={() => setCheckoutStep('form')}
                   className="btn-gold w-full py-4 text-[1rem] justify-center"
                 >
-                  Pokračovat k platbě →
+                  Continue to checkout →
                 </button>
                 <p className="flex items-center justify-center gap-1.5 text-[0.75rem] text-dim">
-                  🔒 Bezpečná platba · Okamžitý přístup
+                  🔒 Secure payment · Instant access
                 </p>
               </div>
             )}
@@ -243,29 +264,34 @@ export default function CartDrawer() {
                       {item.qty > 1 && ` ×${item.qty}`}
                     </span>
                     <span className="font-semibold">
-                      {formatPrice(item.price * item.qty)} Kč
-                    </span>
+                      {formatPrice(item.price * item.qty)}                    </span>
                   </div>
                 ))}
                 {totalSavings > 0 && (
                   <div className="flex justify-between text-[0.82rem]">
-                    <span className="text-[#4caf78]">Sleva</span>
-                    <span className="text-[#4caf78]">−{formatPrice(totalSavings)} Kč</span>
+                    <span className="text-[#4caf78]">Discount</span>
+                    <span className="text-[#4caf78]">−{formatPrice(totalSavings)}</span>
+                  </div>
+                )}
+                {promoApplied && (
+                  <div className="flex justify-between text-[0.82rem]">
+                    <span className="text-gold">Promo ({promoDiscount}% off)</span>
+                    <span className="text-gold">−{formatPriceFull(promoSavings)}</span>
                   </div>
                 )}
                 <div className="flex justify-between border-t border-stroke mt-1 pt-2 font-bold">
-                  <span>Celkem</span>
-                  <span className="text-gold">{formatPrice(total)} Kč</span>
+                  <span>Total</span>
+                  <span className="text-gold">{promoApplied ? formatPriceFull(finalTotal) : formatPrice(finalTotal)}</span>
                 </div>
               </div>
 
               {/* fields */}
               <div className="flex flex-col gap-3">
-                {/* jméno + příjmení */}
+                {/* first + last name */}
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-[0.8rem] text-dim mb-1.5 font-medium">
-                      Jméno <span className="text-[#ff6b6b]">*</span>
+                      First name <span className="text-[#ff6b6b]">*</span>
                     </label>
                     <input
                       type="text"
@@ -274,13 +300,13 @@ export default function CartDrawer() {
                         setForm((f) => ({ ...f, firstName: e.target.value }))
                       }
                       required
-                      placeholder="Jan"
+                      placeholder="John"
                       className="w-full bg-noir border border-stroke rounded-xl px-4 py-3 text-[0.9rem] text-white placeholder-[#444] outline-none transition-colors focus:border-gold"
                     />
                   </div>
                   <div>
                     <label className="block text-[0.8rem] text-dim mb-1.5 font-medium">
-                      Příjmení <span className="text-[#ff6b6b]">*</span>
+                      Last name <span className="text-[#ff6b6b]">*</span>
                     </label>
                     <input
                       type="text"
@@ -289,7 +315,7 @@ export default function CartDrawer() {
                         setForm((f) => ({ ...f, lastName: e.target.value }))
                       }
                       required
-                      placeholder="Novák"
+                      placeholder="Smith"
                       className="w-full bg-noir border border-stroke rounded-xl px-4 py-3 text-[0.9rem] text-white placeholder-[#444] outline-none transition-colors focus:border-gold"
                     />
                   </div>
@@ -298,7 +324,7 @@ export default function CartDrawer() {
                 {/* e-mail */}
                 <div>
                   <label className="block text-[0.8rem] text-dim mb-1.5 font-medium">
-                    E-mail <span className="text-[#ff6b6b]">*</span>
+                    Email <span className="text-[#ff6b6b]">*</span>
                   </label>
                   <input
                     type="email"
@@ -307,13 +333,13 @@ export default function CartDrawer() {
                       setForm((f) => ({ ...f, email: e.target.value }))
                     }
                     required
-                    placeholder="jan@email.cz"
+                    placeholder="john@email.com"
                     className="w-full bg-noir border border-stroke rounded-xl px-4 py-3 text-[0.9rem] text-white placeholder-[#444] outline-none transition-colors focus:border-gold"
                   />
-                  <p className="text-[0.72rem] text-dim mt-1">Šablona bude doručena na tento e-mail.</p>
+                  <p className="text-[0.72rem] text-dim mt-1">The template will be delivered to this email.</p>
                 </div>
 
-                {/* slevový kód */}
+                {/* discount code */}
                 <div>
                   <button
                     type="button"
@@ -321,35 +347,47 @@ export default function CartDrawer() {
                     className="text-[0.8rem] text-dim hover:text-gold transition-colors bg-transparent border-0 cursor-pointer flex items-center gap-1"
                   >
                     <span>{showPromo ? '−' : '+'}</span>
-                    Mám slevový kód
+                    I have a discount code
                   </button>
                   {showPromo && (
-                    <div className="flex gap-2 mt-2">
-                      <input
-                        type="text"
-                        value={form.promoCode}
-                        onChange={(e) =>
-                          setForm((f) => ({ ...f, promoCode: e.target.value.toUpperCase() }))
-                        }
-                        placeholder="KÓDSLEVA"
-                        className="flex-1 bg-noir border border-stroke rounded-xl px-4 py-2.5 text-[0.85rem] text-white placeholder-[#444] outline-none transition-colors focus:border-gold"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleApplyPromo}
-                        className="px-4 py-2.5 rounded-xl border border-gold text-gold text-[0.82rem] font-semibold bg-transparent cursor-pointer hover:bg-[var(--gold-dim-bg)] transition-colors"
-                      >
-                        {promoApplied ? '✓' : 'Použít'}
-                      </button>
+                    <div className="flex flex-col gap-1.5 mt-2">
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={form.promoCode}
+                          onChange={(e) => {
+                            setForm((f) => ({ ...f, promoCode: e.target.value.toUpperCase() }))
+                            setPromoApplied(false)
+                            setPromoError(null)
+                          }}
+                          placeholder=""
+                          className={`flex-1 bg-noir border rounded-xl px-4 py-2.5 text-[0.85rem] text-white placeholder-[#444] outline-none transition-colors ${
+                            promoApplied ? 'border-[#4caf78]' : promoError ? 'border-[#ff6b6b]' : 'border-stroke focus:border-gold'
+                          }`}
+                        />
+                        <button
+                          type="button"
+                          onClick={handleApplyPromo}
+                          className="px-4 py-2.5 rounded-xl border border-gold text-gold text-[0.82rem] font-semibold bg-transparent cursor-pointer hover:bg-[var(--gold-dim-bg)] transition-colors"
+                        >
+                          {promoApplied ? '✓' : 'Apply'}
+                        </button>
+                      </div>
+                      {promoApplied && (
+                        <p className="text-[0.75rem] text-[#4caf78]">✓ {promoDiscount}% discount applied!</p>
+                      )}
+                      {promoError && (
+                        <p className="text-[0.75rem] text-[#ff6b6b]">{promoError}</p>
+                      )}
                     </div>
                   )}
                 </div>
               </div>
 
-              {/* způsob platby */}
+              {/* payment method */}
               <div>
                 <label className="block text-[0.8rem] text-dim mb-2 font-medium">
-                  Způsob platby
+                  Payment method
                 </label>
                 <div className="flex items-center gap-2 bg-noir border border-stroke rounded-xl px-4 py-3">
                   <svg width="28" height="20" viewBox="0 0 38 24" fill="none" className="shrink-0">
@@ -362,12 +400,12 @@ export default function CartDrawer() {
                     <circle cx="23" cy="12" r="7" fill="#F79E1B"/>
                     <path d="M19 7.2a7 7 0 0 1 0 9.6A7 7 0 0 1 19 7.2z" fill="#FF5F00"/>
                   </svg>
-                  <span className="text-[0.82rem] text-dim ml-1">Platební karta</span>
-                  <span className="ml-auto text-[0.72rem] text-[#4caf78] font-medium">✓ Aktivní</span>
+                  <span className="text-[0.82rem] text-dim ml-1">Credit card</span>
+                  <span className="ml-auto text-[0.72rem] text-[#4caf78] font-medium">✓ Active</span>
                 </div>
               </div>
 
-              {/* GDPR souhlas */}
+              {/* consent */}
               <label className="flex items-start gap-3 cursor-pointer">
                 <div className="relative mt-0.5 shrink-0">
                   <input
@@ -394,11 +432,11 @@ export default function CartDrawer() {
                   </div>
                 </div>
                 <span className="text-[0.75rem] text-dim leading-relaxed">
-                  Souhlasím se{' '}
-                  <span className="text-gold underline underline-offset-2 cursor-pointer">zpracováním osobních údajů</span>
-                  {' '}a{' '}
-                  <span className="text-gold underline underline-offset-2 cursor-pointer">obchodními podmínkami</span>.
-                  {' '}Tento souhlas je nezbytný pro dokončení objednávky. <span className="text-[#ff6b6b]">*</span>
+                  I agree to the{' '}
+                  <span className="text-gold underline underline-offset-2 cursor-pointer">processing of personal data</span>
+                  {' '}and{' '}
+                  <span className="text-gold underline underline-offset-2 cursor-pointer">terms of service</span>.
+                  {' '}This consent is required to complete your order. <span className="text-[#ff6b6b]">*</span>
                 </span>
               </label>
             </div>
@@ -409,7 +447,7 @@ export default function CartDrawer() {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gold shrink-0">
                   <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                 </svg>
-                <span className="text-[0.73rem] font-semibold text-gold">30denní garance vrácení peněz</span>
+                <span className="text-[0.73rem] font-semibold text-gold">30-day money-back guarantee</span>
               </div>
               {checkoutError && (
                 <div className="rounded-xl border border-[rgba(255,107,107,0.4)] bg-[rgba(255,107,107,0.08)] px-4 py-3 text-[0.78rem] text-[#ff6b6b]">
@@ -427,10 +465,10 @@ export default function CartDrawer() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/>
                     </svg>
-                    Přesměrování na platbu…
+                    Redirecting to payment…
                   </span>
                 ) : (
-                  `Zaplatit ${formatPrice(total)} Kč`
+                  `Pay ${promoApplied ? formatPriceFull(finalTotal) : formatPrice(finalTotal)}`
                 )}
               </button>
               <button
@@ -438,7 +476,7 @@ export default function CartDrawer() {
                 onClick={() => setCheckoutStep('cart')}
                 className="text-dim text-sm text-center hover:text-white transition-colors bg-transparent border-0 cursor-pointer py-1"
               >
-                ← Zpět do košíku
+                ← Back to cart
               </button>
             </div>
           </form>
@@ -451,16 +489,16 @@ export default function CartDrawer() {
               ✓
             </div>
             <h4 className="font-bold text-lg text-gold-glow">
-              Objednávka přijata!
+              Order received!
             </h4>
             <p className="text-dim text-[0.9rem] leading-relaxed max-w-xs">
-              Platba proběhla úspěšně. Odkaz na šablonu ti pošleme na zadaný e-mail. Děkujeme!
+              Payment was successful. We&apos;ll send the template link to your email. Thank you!
             </p>
             <button
               onClick={() => dispatch({ type: 'CLOSE' })}
               className="btn-gold px-7 py-3 mt-2"
             >
-              Zavřít
+              Close
             </button>
           </div>
         )}

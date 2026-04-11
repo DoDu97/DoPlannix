@@ -10,14 +10,14 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'DoPlannix — Notion šablony pro produktivní život',
+  title: 'DoPlannix — Notion Templates for a Productive Life',
   description:
-    'Kompletní Notion systémy pro řízení života, businessu a financí. Navrženo tak, aby fungovalo od prvního dne.',
-  keywords: 'Notion, šablony, produktivita, plánování, finance, business',
+    'Complete Notion systems for managing your life, business, and finances. Designed to work from day one.',
+  keywords: 'Notion, templates, productivity, planning, finance, business',
   openGraph: {
-    title: 'DoPlannix — Notion šablony pro produktivní život',
+    title: 'DoPlannix — Notion Templates for a Productive Life',
     description:
-      'Kompletní Notion systémy pro řízení života, businessu a financí.',
+      'Complete Notion systems for managing your life, business, and finances.',
     type: 'website',
   },
 }
@@ -28,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="cs" className={inter.variable}>
+    <html lang="en" className={inter.variable}>
       <body>
         <CartProvider>{children}</CartProvider>
       </body>

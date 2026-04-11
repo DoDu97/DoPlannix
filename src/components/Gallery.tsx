@@ -4,12 +4,12 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import Image from 'next/image'
 
 const GALLERY_IMAGES = [
-  { src: '/images/gallery_1.jpg', alt: 'Galerie DoPlannix 1' },
-  { src: '/images/gallery_2.jpg', alt: 'Galerie DoPlannix 2' },
-  { src: '/images/gallery_3.jpg', alt: 'Galerie DoPlannix 3' },
-  { src: '/images/gallery_4.jpg', alt: 'Galerie DoPlannix 4' },
-  { src: '/images/gallery_5.jpg', alt: 'Galerie DoPlannix 5' },
-  { src: '/images/gallery_6.jpg', alt: 'Galerie DoPlannix 6' },
+  { src: '/images/gallery_1.jpg', alt: 'DoPlannix Template Preview 1' },
+  { src: '/images/gallery_2.jpg', alt: 'DoPlannix Template Preview 2' },
+  { src: '/images/gallery_3.jpg', alt: 'DoPlannix Template Preview 3' },
+  { src: '/images/gallery_4.jpg', alt: 'DoPlannix Template Preview 4' },
+  { src: '/images/gallery_5.jpg', alt: 'DoPlannix Template Preview 5' },
+  { src: '/images/gallery_6.jpg', alt: 'DoPlannix Template Preview 6' },
 ]
 
 export default function Gallery() {
@@ -58,15 +58,15 @@ export default function Gallery() {
     >
       {/* header */}
       <div className="text-center mb-14" data-animate>
-        <p className="section-label">Ukázky šablon</p>
+        <p className="section-label">Template previews</p>
         <h2
           className="font-black tracking-tight leading-[1.12] mb-3"
           style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}
         >
-          Jak to vypadá uvnitř
+          See what&apos;s inside
         </h2>
         <p className="text-dim text-base max-w-md mx-auto">
-          Přehledné, funkční a vizuálně čisté šablony připravené k okamžitému použití.
+          Clean, functional, and visually minimal templates ready to use from day one.
         </p>
       </div>
 
@@ -108,7 +108,7 @@ export default function Gallery() {
           <button
             onClick={() => goTo(current - 1)}
             className="w-11 h-11 rounded-xl border border-stroke text-white flex items-center justify-center cursor-pointer transition-all duration-300 hover:border-gold hover:text-gold bg-card"
-            aria-label="Předchozí"
+            aria-label="Previous"
           >
             ←
           </button>
@@ -131,7 +131,7 @@ export default function Gallery() {
           <button
             onClick={() => goTo(current + 1)}
             className="w-11 h-11 rounded-xl border border-stroke text-white flex items-center justify-center cursor-pointer transition-all duration-300 hover:border-gold hover:text-gold bg-card"
-            aria-label="Další"
+            aria-label="Next"
           >
             →
           </button>

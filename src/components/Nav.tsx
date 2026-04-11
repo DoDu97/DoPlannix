@@ -44,12 +44,12 @@ export default function Nav() {
           href="#products"
           className="btn-gold text-sm px-5 py-2.5"
         >
-          Koupit →
+          Buy →
         </a>
         <button
           onClick={() => dispatch({ type: 'OPEN' })}
           className="relative w-11 h-11 rounded-xl border border-stroke bg-transparent text-white flex items-center justify-center text-lg cursor-pointer transition-all duration-300 hover:border-gold hover:text-gold"
-          aria-label="Košík"
+          aria-label="Cart"
         >
           <svg
             width="18"

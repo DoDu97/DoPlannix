@@ -3,10 +3,10 @@
 import { useEffect, useRef } from 'react'
 
 const STATS = [
-  { count: 500, suffix: '+', label: 'spokojených zákazníků' },
-  { count: 40, suffix: 'h+', label: 'ušetřeného času na nastavování' },
-  { count: 3, suffix: '', label: 'komplexní systémy v jednom místě' },
-  { count: 100, suffix: '%', label: 'připraveno k použití od prvního dne' },
+  { count: 500, suffix: '+', label: 'happy customers' },
+  { count: 40, suffix: 'h+', label: 'hours saved on setup' },
+  { count: 3, suffix: '', label: 'complete systems in one place' },
+  { count: 100, suffix: '%', label: 'ready to use from day one' },
 ]
 
 function useCounter(target: number, duration = 1400) {

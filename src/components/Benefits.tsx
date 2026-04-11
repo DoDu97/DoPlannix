@@ -1,38 +1,38 @@
 const BENEFITS = [
   {
     icon: '⚡',
-    title: 'Okamžitý přístup',
-    desc: 'Po zaplacení máš šablonu ihned k dispozici a můžeš ji rovnou začít používat. Bez čekání, bez zbytečných kroků.',
+    title: 'Instant Access',
+    desc: 'Once you pay, your template is ready to use immediately. No waiting, no unnecessary steps.',
     delay: '0s',
   },
   {
     icon: '🎯',
-    title: 'Připraveno k použití',
-    desc: 'Každá šablona je navržena tak, abys mohl začít hned. Stačí doplnit vlastní data a systém jede.',
+    title: 'Ready to Use',
+    desc: 'Every template is designed so you can start right away. Just add your own data and the system runs.',
     delay: '0.06s',
   },
   {
     icon: '🖱️',
-    title: 'Jednoduché ovládání',
-    desc: 'Přehledné a intuitivní — zorientuješ se rychle a začneš používat bez zbytečného tápání.',
+    title: 'Easy to Use',
+    desc: 'Clear and intuitive — you\'ll find your way quickly and start without any fumbling around.',
     delay: '0.12s',
   },
   {
     icon: '📱',
-    title: 'Funguje na všech zařízeních',
-    desc: 'Používej Notion na mobilu, tabletu i počítači. Ke svému systému se dostaneš kdykoliv a odkudkoliv.',
+    title: 'Works on All Devices',
+    desc: 'Use Notion on your phone, tablet, or computer. Access your system anytime, from anywhere.',
     delay: '0.18s',
   },
   {
     icon: '🧩',
-    title: 'Vše na jednom místě',
-    desc: 'Místo několika aplikací máš všechny úkoly, finance, plánování i projekty pohromadě a pod kontrolou.',
+    title: 'Everything in One Place',
+    desc: 'Instead of multiple apps, all your tasks, finances, planning, and projects are together and under control.',
     delay: '0.24s',
   },
   {
     icon: '⏱️',
-    title: 'Úspora času',
-    desc: 'Nemusíš nic stavět od nuly. Dostaneš hotový systém, který ti ušetří čas i energii hned od začátku.',
+    title: 'Save Time',
+    desc: 'No need to build anything from scratch. You get a ready-made system that saves you time and energy right from the start.',
     delay: '0.30s',
   },
 ]
@@ -46,17 +46,17 @@ export default function Benefits() {
     >
       {/* section header */}
       <div className="text-center mb-14">
-        <p className="section-label">Co dostaneš</p>
+        <p className="section-label">What you get</p>
         <h2
           className="font-black tracking-tight leading-[1.12] mb-3"
           style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}
         >
-          Systém, který můžeš začít používat<br />
-          <span className="text-gold-glow">hned od prvního dne</span>
+          A system you can start using<br />
+          <span className="text-gold-glow">from day one</span>
         </h2>
         <p className="text-dim text-base max-w-lg mx-auto leading-relaxed">
-          Žádné složité nastavování. Šablonu si jednoduše přidáš do Notionu a
-          během pár minut můžeš začít.
+          No complex setup. Simply add the template to Notion and you&apos;re
+          ready to go in minutes.
         </p>
       </div>
 

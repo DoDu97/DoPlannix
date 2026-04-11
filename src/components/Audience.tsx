@@ -1,23 +1,23 @@
 const AUDIENCE = [
   {
     emoji: '🚀',
-    tag: 'Podnikatel / Freelancer',
-    title: 'Řídíš vlastní business a projekty',
-    desc: 'Máš klienty, úkoly, termíny i finance na několika místech a potřebuješ systém, který ti pomůže udržet pořádek a mít vše důležité pod kontrolou.',
+    tag: 'Entrepreneur / Freelancer',
+    title: 'You run your own business and projects',
+    desc: 'You have clients, tasks, deadlines, and finances spread across multiple places and need a system to help you stay organized and keep everything important under control.',
     delay: '0s',
   },
   {
     emoji: '💼',
-    tag: 'Zaměstnanec',
-    title: 'Chceš být produktivnější',
-    desc: 'Řešíš pracovní úkoly, osobní cíle i běžné povinnosti a hledáš způsob, jak si vše lépe uspořádat a mít jasněji v tom, co je opravdu důležité.',
+    tag: 'Employee',
+    title: 'You want to be more productive',
+    desc: 'You handle work tasks, personal goals, and everyday responsibilities, and you\'re looking for a way to organize everything better and get clearer on what really matters.',
     delay: '0.08s',
   },
   {
     emoji: '📚',
     tag: 'Student',
-    title: 'Studuješ a buduješ návyky',
-    desc: 'Uspořádej si studium, úkoly, výdaje i osobní cíle do jednoho přehledného systému, který ti pomůže fungovat každý den.',
+    title: 'You\'re studying and building habits',
+    desc: 'Organize your studies, tasks, expenses, and personal goals into one clear system that helps you function every single day.',
     delay: '0.16s',
   },
 ]
@@ -30,17 +30,17 @@ export default function Audience() {
     >
       {/* header */}
       <div className="text-center mb-14">
-        <p className="section-label">Pro koho to je</p>
+        <p className="section-label">Who it&apos;s for</p>
         <h2
           className="font-black tracking-tight leading-[1.12] mb-3"
           style={{ fontSize: 'clamp(1.8rem, 4vw, 2.8rem)' }}
         >
-          Systém pro lidi, kteří chtějí mít{' '}
-          <span className="text-gold-glow">vše pod kontrolou</span>
+          A system for people who want to{' '}
+          <span className="text-gold-glow">stay in control</span>
         </h2>
         <p className="text-dim text-base max-w-xl mx-auto leading-relaxed">
-          DoPlannix je určený pro každého, kdo chce lépe zvládat práci, finance,
-          plánování a mít své cíle vždy po ruce.
+          DoPlannix is for anyone who wants to better manage their work, finances,
+          planning, and always have their goals at hand.
         </p>
       </div>
 
