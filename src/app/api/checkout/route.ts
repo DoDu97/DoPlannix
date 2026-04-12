@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 
     const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = items.map((item) => ({
       price_data: {
-        currency: 'czk',
+        currency: 'usd',
         product_data: {
           name: item.name,
           images: [`${origin}${item.img}`],
