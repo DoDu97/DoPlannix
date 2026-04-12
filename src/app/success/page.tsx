@@ -2,8 +2,8 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Platba proběhla úspěšně — DoPlannix',
-  description: 'Tvoje objednávka byla dokončena. Brzy ti pošleme odkaz na šablonu.',
+  title: 'Payment Successful — DoPlannix',
+  description: 'Your order is confirmed. We will send your template download link shortly.',
 }
 
 export default function SuccessPage() {
@@ -28,16 +28,16 @@ export default function SuccessPage() {
         className="font-black tracking-tight mb-3"
         style={{ fontSize: 'clamp(1.8rem, 4vw, 2.6rem)' }}
       >
-        Platba proběhla{' '}
-        <span className="text-gold-glow">úspěšně!</span>
+        Payment{' '}
+        <span className="text-gold-glow">successful!</span>
       </h1>
 
       <p className="text-dim leading-relaxed max-w-md mb-2" style={{ fontSize: '1rem' }}>
-        Děkujeme za nákup. Odkaz na tvoji Notion šablonu ti pošleme na e-mail
-        zadaný při objednávce — obvykle do pár minut.
+        Thank you for your purchase. Your template download link has been sent to the email
+        address provided at checkout — usually within a few minutes.
       </p>
       <p className="text-dim text-[0.85rem] mb-10">
-        Zkontroluj také složku <strong className="text-[#ccc]">Spam / Hromadné</strong>, kdyby e-mail dorazil tam.
+        Please also check your <strong className="text-[#ccc]">Spam / Promotions</strong> folder just in case.
       </p>
 
       {/* guarantee strip */}
@@ -51,12 +51,12 @@ export default function SuccessPage() {
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
         </svg>
-        30denní garance vrácení peněz — bez otázek
+        30-day money-back guarantee — no questions asked
       </div>
 
       {/* CTA */}
       <Link href="/" className="btn-gold px-8 py-3.5 text-[0.95rem]">
-        ← Zpět na hlavní stránku
+        ← Back to homepage
       </Link>
     </main>
   )
