@@ -80,7 +80,9 @@ export default function CartDrawer() {
           items: items.map((item) => ({
             id: item.id,
             name: item.name,
-            price: item.price,
+            price: promoApplied
+              ? Math.round(item.price * (1 - promoDiscount / 100) * 100) / 100
+              : item.price,
             qty: item.qty,
             img: item.img,
           })),
