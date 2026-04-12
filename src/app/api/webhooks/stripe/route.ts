@@ -49,11 +49,11 @@ function buildEmailHtml(products: { name: string; url: string }[]): string {
     <!-- Logo -->
     <div style="text-align: center; margin-bottom: 32px;">
       <img
-        src="https://doplannix.com/images/dp_black.png"
+        src="https://doplannix.com/images/dp_white.png"
         alt="DoPlannix"
         width="40"
         height="40"
-        style="display: inline-block; width: 40px; height: 40px; object-fit: contain; filter: invert(1) brightness(0.85); vertical-align: middle; margin-right: 10px;"
+        style="display: inline-block; width: 40px; height: 40px; object-fit: contain; vertical-align: middle; margin-right: 10px;"
       />
       <span style="font-size: 22px; font-weight: 900; color: #f0f0f0; letter-spacing: -0.03em; vertical-align: middle;">DoPlannix</span>
     </div>
