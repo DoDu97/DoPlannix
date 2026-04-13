@@ -38,3 +38,10 @@ next-env.d.ts
 
 # product files — distributed via secure download link, not git
 /pdf
+/generated
+
+# Vercel CLI pulled env file
+.env.vercel.local
+
+# Source design assets
+/Images
