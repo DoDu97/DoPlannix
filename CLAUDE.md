@@ -124,31 +124,49 @@ CSS proměnné v `:root` (pro hodnoty mimo Tailwind utility):
 | 3  | Financial No Brainer | $29 | $59 |
 | 4  | DoPlannix Bundle (featured) | $49 | $119 |
 
-Ceny jsou v USD, Stripe session v CZK (`currency: 'czk'`). `formatPrice()` formátuje pro zobrazení, `formatPriceFull()` pro původní přeškrtnutou cenu.
+Ceny jsou v USD, Stripe session v USD (`currency: 'usd'`). `formatPrice()` formátuje pro zobrazení, `formatPriceFull()` pro původní přeškrtnutou cenu.
 
 ### Obrázky
 Uloženy v `public/images/`:
 - `product_life.png`, `product_business.png`, `product_financial.png`, `product_bundle.png`
 - `gallery_1.jpg` až `gallery_6.jpg` — náhledy šablon pro Gallery sekci
 - `dp_black.png` — DoPlannix logo (použij s `filter: invert(1) brightness(0.85)` na tmavém pozadí)
+- `dp_white.png` — DoPlannix logo bílé (použij v emailech a na tmavém pozadí bez filtru)
 - `notion-logo.png` — Notion logo (bez filtru, originální barvy)
+
+### PDF soubory
+Uloženy lokálně ve `/pdf` (v `.gitignore`) a nahrané na **Vercel Blob Storage**:
+```
+https://qhax2qyplednen4e.public.blob.vercel-storage.com/pdfs/Business_No_Brainer.pdf
+https://qhax2qyplednen4e.public.blob.vercel-storage.com/pdfs/Financial_No_Brainer.pdf
+https://qhax2qyplednen4e.public.blob.vercel-storage.com/pdfs/Bundle_Doplannix.pdf
+```
+Po aktualizaci PDF je potřeba znovu nahrát přes `vercel blob put`.
 
 ### Environment Variables (.env.local)
 ```
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_...
 STRIPE_SECRET_KEY=sk_...
 STRIPE_WEBHOOK_SECRET=whsec_...
+RESEND_API_KEY=re_...
 ```
 Stejné proměnné musí být nastaveny ve Vercel dashboardu (Settings → Environment Variables).
 
 ### Deploy
 - Git → GitHub (`DoDu97/DoPlannix`) → Vercel (auto-deploy na každý push do `main`)
 - Doména: `doplannix.com` (Active24 DNS → Vercel)
-- PDF soubory (`/pdf`) jsou v `.gitignore` — distribuují se zákazníkům odkazem po platbě
+- PDF soubory (`/pdf`) jsou v `.gitignore` — hostované na Vercel Blob, zákazníkům se posílají emailem
+
+### Email po platbě (Resend)
+- `src/app/api/webhooks/stripe/route.ts` zpracovává `checkout.session.completed`
+- Po platbě odesílá email přes **Resend** z `hello@doplannix.com`
+- Email obsahuje logo (`dp_white.png`), instrukce a download link na PDF dle zakoupeného produktu
+- Mapování produktů na PDF je hardcoded v `PRODUCT_LINKS` v route.ts
+- Doména `doplannix.com` ověřena v Resendu přes DNS záznamy (DKIM, SPF)
 
 ### Nedokončené integrace
-- **Webhook po platbě:** `src/app/api/webhooks/stripe/route.ts` zpracovává `checkout.session.completed`, ale neposílá email se šablonou ani neukládá objednávku do DB — TODO
 - **Lead magnet:** `LeadMagnet.tsx` → `setTimeout` simulace — žádný email service není napojen — TODO
+- **Databáze objednávek:** webhook neukládá objednávky do DB — TODO
 
 ## Konvence
 
