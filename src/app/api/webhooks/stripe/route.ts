@@ -2,6 +2,7 @@ import Stripe from 'stripe'
 import { Resend } from 'resend'
 import { headers } from 'next/headers'
 import { NextRequest, NextResponse } from 'next/server'
+import { supabaseAdmin } from '@/lib/supabase'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-03-25.dahlia',
@@ -164,6 +165,25 @@ export async function POST(req: NextRequest) {
         console.error('[Resend] Failed to send email:', error)
       } else {
         console.log(`[Resend] ✅ Email sent to ${customerEmail}`)
+      }
+
+      // Uložíme objednávku do Supabase
+      const orderRows = purchasedProducts.map((product) => ({
+        stripe_session_id: session.id,
+        customer_email: customerEmail,
+        product_name: product.name,
+        amount_total: session.amount_total ?? 0,
+        currency: session.currency ?? 'usd',
+        status: 'completed',
+        pdf_url: product.url,
+      }))
+
+      const { error: dbError } = await supabaseAdmin.from('orders').insert(orderRows)
+
+      if (dbError) {
+        console.error('[Supabase] Failed to insert order(s):', dbError.message)
+      } else {
+        console.log(`[Supabase] ✅ Inserted ${orderRows.length} order row(s) for session ${session.id}`)
       }
 
       break
