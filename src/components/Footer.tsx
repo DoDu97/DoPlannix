@@ -17,10 +17,24 @@ export default function Footer() {
         </Link>
       </div>
 
-      {/* copy */}
-      <p className="text-[0.78rem] text-dim/60 text-center md:text-right">
-        © {new Date().getFullYear()} DoPlannix. All rights reserved.
-      </p>
+      <div className="flex items-center gap-4">
+        <p className="text-[0.78rem] text-dim/60 text-center md:text-right">
+          © {new Date().getFullYear()} DoPlannix. All rights reserved.
+        </p>
+        <a
+          href="https://www.instagram.com/doplannix/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-dim/60 hover:text-gold transition-colors"
+          aria-label="Instagram"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <circle cx="12" cy="12" r="4.5"/>
+            <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </a>
+      </div>
     </footer>
   )
 }
