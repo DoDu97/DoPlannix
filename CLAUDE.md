@@ -37,7 +37,7 @@ src/
 │   └── api/
 │       ├── checkout/route.ts       — POST endpoint → vytvoří Stripe checkout session, vrátí URL
 │       └── webhooks/stripe/route.ts — Stripe webhook handler (checkout.session.completed)
-│                                      TODO: odeslat email se šablonou + uložit do DB
+│                                      Odesílá email přes Resend + ukládá objednávku do Supabase
 ├── components/
 │   ├── AnimationInit.tsx   — IntersectionObserver pro [data-animate] elementy (fire-once)
 │   ├── SmoothScroll.tsx    — Custom smooth scroll pro #anchor odkazy (1200ms, easeInOutCubic)
@@ -55,10 +55,11 @@ src/
 │   ├── CartDrawer.tsx      — Slide-in košík + 3-krokový checkout (cart → form → done)
 │   │                         Promo kód: DOPLANNIX10 = 10 % sleva (hardcoded)
 │   │                         Platba: fetch na /api/checkout → redirect na Stripe session
-│   └── Footer.tsx          — Logo + copyright + linky na právní stránky
+│   └── Footer.tsx          — Copyright + linky na právní stránky + Instagram ikona (vpravo)
 └── lib/
     ├── data.ts             — PRODUCTS, TESTIMONIALS, FAQ_ITEMS, formatPrice(), formatPriceFull()
-    └── cart.tsx            — React Context + useReducer (ADD/REMOVE/INCREMENT/DECREMENT/OPEN/CLOSE)
+    ├── cart.tsx            — React Context + useReducer (ADD/REMOVE/INCREMENT/DECREMENT/OPEN/CLOSE)
+    └── supabase.ts         — Server-side Supabase admin client (service role, bypasuje RLS)
 ```
 
 ### Pořadí sekcí — sales funnel
@@ -143,12 +144,19 @@ https://qhax2qyplednen4e.public.blob.vercel-storage.com/pdfs/Bundle_Doplannix.pd
 ```
 Po aktualizaci PDF je potřeba znovu nahrát přes `vercel blob put`.
 
+### Favicon
+- `src/app/icon.png` — 512×512, použit `Images/Logo/3D/DP-3D.png`
+- `src/app/favicon.ico` — 32×32, stejný zdroj
+- Next.js App Router je servuje automaticky, žádná konfigurace není potřeba
+
 ### Environment Variables (.env.local)
 ```
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_...
-STRIPE_SECRET_KEY=sk_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...
+STRIPE_SECRET_KEY=sk_live_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 RESEND_API_KEY=re_...
+NEXT_PUBLIC_SUPABASE_URL=https://gmzdammseqipgfzqpuem.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=sb_secret_...
 ```
 Stejné proměnné musí být nastaveny ve Vercel dashboardu (Settings → Environment Variables).
 
@@ -164,9 +172,15 @@ Stejné proměnné musí být nastaveny ve Vercel dashboardu (Settings → Envir
 - Mapování produktů na PDF je hardcoded v `PRODUCT_LINKS` v route.ts
 - Doména `doplannix.com` ověřena v Resendu přes DNS záznamy (DKIM, SPF)
 
+### Databáze objednávek (Supabase)
+- Projekt: `Doplannix-prod` (ID: `gmzdammseqipgfzqpuem`)
+- Tabulka `orders`: `id`, `stripe_session_id` (UNIQUE), `customer_email`, `product_name`, `amount_total` (centy), `currency`, `status`, `pdf_url`, `created_at`
+- RLS povoleno, žádné policies — service role key bypasuje RLS
+- Insert probíhá v webhook handleru po úspěšném odeslání emailu
+- Duplicitní webhooky jsou zachyceny přes UNIQUE constraint na `stripe_session_id`
+
 ### Nedokončené integrace
 - **Lead magnet:** `LeadMagnet.tsx` → `setTimeout` simulace — žádný email service není napojen — TODO
-- **Databáze objednávek:** webhook neukládá objednávky do DB — TODO
 
 ## Konvence
 
