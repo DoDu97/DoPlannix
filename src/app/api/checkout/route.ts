@@ -5,7 +5,7 @@ import { validatePromoCode } from '@/lib/promo'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-03-25.dahlia',
-  httpClient: Stripe.createNodeHttpClient(),
+  httpClient: Stripe.createFetchHttpClient(),
 })
 
 const ALLOWED_ORIGINS = new Set([

@@ -6,7 +6,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2026-03-25.dahlia',
-  httpClient: Stripe.createNodeHttpClient(),
+  httpClient: Stripe.createFetchHttpClient(),
 })
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
