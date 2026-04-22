@@ -35,7 +35,8 @@ src/
 │   ├── obchodni-podminky/page.tsx  — Obchodní podmínky (CZ)
 │   ├── reklamace/page.tsx          — Reklamace a vrácení zboží (CZ)
 │   └── api/
-│       ├── checkout/route.ts       — POST endpoint → vytvoří Stripe checkout session, vrátí URL
+│       ├── checkout/route.ts       — POST endpoint → validuje items ze serveru, vytvoří Stripe session
+│       ├── validate-promo/route.ts — POST endpoint → validuje promo kód (server-side only)
 │       └── webhooks/stripe/route.ts — Stripe webhook handler (checkout.session.completed)
 │                                      Odesílá email přes Resend + ukládá objednávku do Supabase
 ├── components/
@@ -51,23 +52,23 @@ src/
 │   ├── Gallery.tsx         — Slider s náhledy šablon; perView 1/2/3 podle šířky, dot navigace
 │   ├── Testimonials.tsx    — Slider s recenzemi; perView 1/2/3 podle šířky, dot navigace
 │   ├── FAQ.tsx             — Accordion, výška animována přes grid-template-rows: 0fr → 1fr
-│   ├── LeadMagnet.tsx      — E-mail capture (setTimeout simulace — backend není napojen)
 │   ├── CartDrawer.tsx      — Slide-in košík + 3-krokový checkout (cart → form → done)
-│   │                         Promo kód: DOPLANNIX10 = 10 % sleva (hardcoded)
+│   │                         Promo kód: DOPLANNIX10 = 10 % sleva (validace přes /api/validate-promo)
 │   │                         Platba: fetch na /api/checkout → redirect na Stripe session
 │   └── Footer.tsx          — Copyright + linky na právní stránky + Instagram ikona (vpravo)
 └── lib/
     ├── data.ts             — PRODUCTS, TESTIMONIALS, FAQ_ITEMS, formatPrice(), formatPriceFull()
     ├── cart.tsx            — React Context + useReducer (ADD/REMOVE/INCREMENT/DECREMENT/OPEN/CLOSE)
+    ├── promo.ts            — Server-side promo kódy + validatePromoCode() (nikdy se neposílá klientovi)
     └── supabase.ts         — Server-side Supabase admin client (service role, bypasuje RLS)
 ```
 
 ### Pořadí sekcí — sales funnel
-`Nav` → `Hero` → `StatsStrip` → `Benefits` → `Audience` → `Products` → `Gallery` → `Testimonials` → `FAQ` → `LeadMagnet` → `Footer` → `CartDrawer` (fixed overlay)
+`Nav` → `Hero` → `StatsStrip` → `Benefits` → `Audience` → `Products` → `Gallery` → `Testimonials` → `FAQ` → `Footer` → `CartDrawer` (fixed overlay)
 
 ### Pozadí sekcí — vzor střídání
 - `#0a0a0a` (noir): Hero, Benefits, Products, FAQ
-- `#141414` (card): StatsStrip, Audience, Gallery, Testimonials, LeadMagnet
+- `#141414` (card): StatsStrip, Audience, Gallery, Testimonials
 
 ### Tailwind v4 — design tokeny (`@theme` v globals.css)
 ```
@@ -178,9 +179,6 @@ Stejné proměnné musí být nastaveny ve Vercel dashboardu (Settings → Envir
 - RLS povoleno, žádné policies — service role key bypasuje RLS
 - Insert probíhá v webhook handleru po úspěšném odeslání emailu
 - Duplicitní webhooky jsou zachyceny přes UNIQUE constraint na `stripe_session_id`
-
-### Nedokončené integrace
-- **Lead magnet:** `LeadMagnet.tsx` → `setTimeout` simulace — žádný email service není napojen — TODO
 
 ## Konvence
 
