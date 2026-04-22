@@ -120,7 +120,11 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: session.url })
   } catch (error) {
-    console.error('[Stripe] Checkout session error:', error)
+    if (error instanceof Stripe.errors.StripeError) {
+      console.error(`[Stripe] ${error.type} — code: ${error.code} — status: ${error.statusCode} — message: ${error.message}`)
+    } else {
+      console.error('[Stripe] Checkout session error:', error)
+    }
     return NextResponse.json(
       { error: 'Failed to create payment session. Please try again.' },
       { status: 500 }
