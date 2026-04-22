@@ -180,6 +180,39 @@ Stejné proměnné musí být nastaveny ve Vercel dashboardu (Settings → Envir
 - Insert probíhá v webhook handleru po úspěšném odeslání emailu
 - Duplicitní webhooky jsou zachyceny přes UNIQUE constraint na `stripe_session_id`
 
+## Bezpečnost
+
+### Co bylo implementováno
+- **Server-side validace cen** — `/api/checkout` bere ceny výhradně z `PRODUCTS` katalogu, nikdy od klienta
+- **Promo kódy server-side only** — uloženy v `src/lib/promo.ts`, klient je nikdy nevidí; validace přes `/api/validate-promo`
+- **Input validace** — email regex, integer check na id/qty, limit 10 položek, ověření existence produktu
+- **Rate limiting** — `/api/checkout` max 10 req/min, `/api/validate-promo` max 20 req/min per IP (in-memory, best-effort)
+- **CORS whitelist** — pouze `https://doplannix.com` a `https://www.doplannix.com` (+ localhost v dev)
+- **Security headers** — CSP, X-Frame-Options: DENY, X-Content-Type-Options, Referrer-Policy, Permissions-Policy (viz `next.config.ts`)
+- **Stripe webhook** — signature verification přes `stripe.webhooks.constructEvent()`, chyba vrací generickou zprávu
+- **Stripe HTTP client** — `Stripe.createFetchHttpClient()` (vyžadováno pro Vercel; Node.js https modul nefunguje)
+
+### Pravidla — nikdy neporušovat
+- **Žádné secrets v kódu ani gitu.** API klíče pouze v `.env.local` (lokálně) a Vercel Environment Variables (produkce)
+- **Ceny vždy ze serveru.** Klient posílá pouze `id` + `qty`, nikdy cenu
+- **Promo kódy nikdy na klienta.** Pouze `src/lib/promo.ts` + `/api/validate-promo` endpoint
+- **`"use client"` jen kde nutné** — API routes jsou vždy server-side
+
+### Stripe – důležité poznámky
+- Používá `Stripe.createFetchHttpClient()` — bez toho vzniká `StripeConnectionError` na Verceli
+- API verze: `2026-03-25.dahlia` (Stripe SDK v21)
+- Checkout session vytváří ceny dynamicky přes `price_data` — žádné předkonfigurované produkty v Stripe dashboardu nejsou potřeba
+
+### Supabase RLS
+- RLS **zapnuté**, žádné policies — to je správně (anon přístup přes Data API je zcela blokovaný)
+- Service role key vždy obchází RLS → webhook může INSERT bez policy
+- Nikdy nevytvářej permissive policy na tabulce `orders`
+
+### Environment Variables
+Při přidávání nové env proměnné ji nastav na **obou místech**:
+1. `.env.local` (lokální vývoj)
+2. Vercel dashboard → Settings → Environment Variables (produkce)
+
 ## Konvence
 
 - Obsah webu v **angličtině**, právní stránky existují v EN i CZ variantě
