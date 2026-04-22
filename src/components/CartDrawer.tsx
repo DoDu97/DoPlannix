@@ -24,6 +24,7 @@ export default function CartDrawer() {
   const [promoDiscount, setPromoDiscount] = useState(0)
   const [promoError, setPromoError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [isPromoLoading, setIsPromoLoading] = useState(false)
   const [checkoutError, setCheckoutError] = useState<string | null>(null)
   const drawerRef = useRef<HTMLDivElement>(null)
 
@@ -50,20 +51,31 @@ export default function CartDrawer() {
   const promoSavings = promoApplied ? total * promoDiscount / 100 : 0
   const finalTotal = total - promoSavings
 
-  const PROMO_CODES: Record<string, number> = {
-    'DOPLANNIX10': 10,
-  }
-
-  const handleApplyPromo = () => {
-    const code = form.promoCode.trim().toUpperCase()
-    if (PROMO_CODES[code] !== undefined) {
-      setPromoApplied(true)
-      setPromoDiscount(PROMO_CODES[code])
-      setPromoError(null)
-    } else {
-      setPromoApplied(false)
-      setPromoDiscount(0)
-      setPromoError('Invalid discount code.')
+  const handleApplyPromo = async () => {
+    const code = form.promoCode.trim()
+    if (!code) return
+    setIsPromoLoading(true)
+    setPromoError(null)
+    try {
+      const res = await fetch('/api/validate-promo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code }),
+      })
+      const data = await res.json()
+      if (data.valid) {
+        setPromoApplied(true)
+        setPromoDiscount(data.discount)
+        setPromoError(null)
+      } else {
+        setPromoApplied(false)
+        setPromoDiscount(0)
+        setPromoError('Invalid discount code.')
+      }
+    } catch {
+      setPromoError('Failed to validate code. Please try again.')
+    } finally {
+      setIsPromoLoading(false)
     }
   }
 
@@ -77,16 +89,9 @@ export default function CartDrawer() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          items: items.map((item) => ({
-            id: item.id,
-            name: item.name,
-            price: promoApplied
-              ? Math.round(item.price * (1 - promoDiscount / 100) * 100) / 100
-              : item.price,
-            qty: item.qty,
-            img: item.img,
-          })),
+          items: items.map((item) => ({ id: item.id, qty: item.qty })),
           customerEmail: form.email,
+          promoCode: promoApplied ? form.promoCode.trim() : undefined,
         }),
       })
 
@@ -370,9 +375,10 @@ export default function CartDrawer() {
                         <button
                           type="button"
                           onClick={handleApplyPromo}
-                          className="px-4 py-2.5 rounded-xl border border-gold text-gold text-[0.82rem] font-semibold bg-transparent cursor-pointer hover:bg-[var(--gold-dim-bg)] transition-colors"
+                          disabled={isPromoLoading}
+                          className="px-4 py-2.5 rounded-xl border border-gold text-gold text-[0.82rem] font-semibold bg-transparent cursor-pointer hover:bg-[var(--gold-dim-bg)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          {promoApplied ? '✓' : 'Apply'}
+                          {isPromoLoading ? '…' : promoApplied ? '✓' : 'Apply'}
                         </button>
                       </div>
                       {promoApplied && (
