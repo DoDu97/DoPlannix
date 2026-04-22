@@ -38,16 +38,6 @@ interface CheckoutBody {
 }
 
 export async function POST(req: NextRequest) {
-  // Diagnostic: verify key format and network
-  const keyPrefix = process.env.STRIPE_SECRET_KEY?.slice(0, 8) ?? 'MISSING'
-  console.log(`[Diag] key prefix: ${keyPrefix}`)
-  try {
-    const ping = await fetch('https://api.stripe.com', { method: 'HEAD' })
-    console.log(`[Diag] Stripe reachable: ${ping.status}`)
-  } catch (e) {
-    console.log(`[Diag] Stripe NOT reachable: ${String(e)}`)
-  }
-
   // Rate limiting
   const ip = req.headers.get('x-forwarded-for')?.split(',')[0].trim() ?? 'unknown'
   if (!checkRateLimit(ip)) {
@@ -131,11 +121,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: session.url })
   } catch (error) {
-    if (error instanceof Stripe.errors.StripeError) {
-      console.error(JSON.stringify({ type: error.type, code: error.code, status: error.statusCode, message: error.message, raw: String(error) }))
-    } else {
-      console.error('[Stripe] Checkout session error:', String(error))
-    }
+    console.error('[Stripe] Checkout session error:', error)
     return NextResponse.json(
       { error: 'Failed to create payment session. Please try again.' },
       { status: 500 }
